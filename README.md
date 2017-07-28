@@ -33,15 +33,15 @@ To create the *bad* tool on your local machine, execute:
 
     $ git clone https://github.com/caruccio/bad
     $ cd bad
-    $ docker build . -t bad
+    $ sudo docker build . -t bad
 
 A new image *bad* is created:
 
-    $ docker images bad
+    $ sudo docker images bad
 
 Execute for help:
 
-    $ docker run -it --rm bad
+    $ sudo docker run -it --rm bad
     Usage: docker run [ENV-PARAMS] [VOLUME-PARAMS] [BAD-IMAGE-NAME] [APP-IMAGE-NAME]
 
     Where:
@@ -68,7 +68,7 @@ Execute for help:
 
     Example usage:
 
-        $ docker run \
+        $ sudo docker run \
             -e AWS_ACCESS_KEY_ID=XXXXXXXXXXXXXXX \
             -e AWS_SECRET_ACCESS_KEY=XXXXXXXXXXXXXXXXXX \
             -e AWS_DEFAULT_REGION=us-east-1 \
@@ -109,7 +109,7 @@ App Server is a basic AMI EBS backed volume used to spinup docker containers of 
 
 **Any already existing AMI named "BAD - AppServer" will be destroyed**
 
-    $ docker run \
+    $ sudo docker run \
         -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
         -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
         -e AWS_DEFAULT_REGION=us-east-1 \
@@ -138,7 +138,7 @@ and docker credentials `$HOME/.docker` inside de container.
 
 OK, let's build the app and deploy it on EC2:
 
-    $ docker run \
+    $ sudo docker run \
         -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
         -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
         -e AWS_DEFAULT_REGION=us-east-1 \

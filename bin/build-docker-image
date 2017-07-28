@@ -14,6 +14,9 @@ if [ -e "${APP_ROOT_DIR}/Gemfile" ]; then
     BUILDER_IMAGE=centos/ruby-22-centos7
 elif [ -e "${APP_ROOT_DIR}/requirements.txt" ]; then
     BUILDER_IMAGE=centos/python-36-centos7
+else
+    echo "Unable to detect language to build"
+    exit 1
 fi ## add more builder images here
 
 set -eu

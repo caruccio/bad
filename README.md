@@ -16,7 +16,7 @@ an application docker image and executes it on EC2.
 
 # Dependencies
 
-From a user POV, this tool depends on:
+From the user POV, this tool depends on:
 
 - Docker
 
@@ -178,8 +178,6 @@ Access the application and profit!
 
 - Updating the running application (a.k.a. deploy strategy) is not properly addressed (not downtime-safe)
 
-- The application should execute under an application server (puma in this case) and is not directly exposed to internet
-
 - Developer whants to test its app locally
 
 - Code testing is out of scope. They are up to the developer implement and run
@@ -247,8 +245,22 @@ The app is initiated as a daemon docker container, with cpu and memory constrain
 resources exhasution by capping CPU and memory of the container (see file `terraform/ansible/roles/appserver/tasks/main.yaml`,
 task `Start app container`). If the app dies, dockers restart it automatically.
 
-Server is reacheable only on ports 80 (the service) and 22 (SSH). Although it would be better to not expose the SSH port
-to internet by using a bastion/jump host.
+Server is reacheable only on ports 80 (the service) and 22 (SSH)
+
+### Issues
+
+The security attack surface could be smaller if we avoid exposing SSH port to internet by using a bastion/jump host.
+
+Docker client needs root access to connect to local docker daemon, which makes this method not suitable for CI/CD tools
+like Jenkins. That could be mitigated replacing docker client and daemon with tools like
+[buildah](https://github.com/projectatomic/buildah), [skope](https://github.com/projectatomic/skopeo) and
+[runc](https://github.com/opencontainers/runc).
+
+The `--privileged` flag is necessary for containers to access `/root/.docker/config.json` if its permissions are
+too restritive (0700 for instance).
+
+Web applications should run under an application server, like puma, instead being directly exposed to internet.
+App servers are better designed to deal with concurrency and high load.
 
 
 ### Data flow diagram
@@ -281,6 +293,7 @@ to internet by using a bastion/jump host.
                                                                 | EC2 Instance |
                                                                 ·--------------·
 ```
+
 
 ## Repo structure
 

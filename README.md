@@ -138,11 +138,12 @@ and docker credentials `$HOME/.docker` inside de container.
 
 OK, let's build the app and deploy it on EC2:
 
+    $ git clone https://github.com/rea-cruitment/simple-sinatra-app
     $ sudo docker run \
         -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
         -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
         -e AWS_DEFAULT_REGION=us-east-1 \
-        -v /fullpath/to/simple-sinatra-app:/src \
+        -v $PWD/simple-sinatra-app:/src \
         -v ${AWS_PRIVATE_KEY_FILE:-$HOME/.ssh/id_rsa}:/ssh-private-key \
         -v /var/run/docker.sock:/var/run/docker.sock \
         -v /root/.docker/:/bad/.docker \

@@ -145,8 +145,8 @@ OK, let's build the app and deploy it on EC2:
         -v /fullpath/to/simple-sinatra-app:/src \
         -v ${AWS_PRIVATE_KEY_FILE:-$HOME/.ssh/id_rsa}:/ssh-private-key \
         -v /var/run/docker.sock:/var/run/docker.sock \
-        -v $HOME/.docker/:/bad/.docker \
-        -it --rm \
+        -v /root/.docker/:/bad/.docker \
+        -it --rm --privileged \
         bad \
         caruccio/ssa:1.0
 

@@ -31,6 +31,8 @@ From a user POV, this tool depends on:
 
 To create the *bad* tool on your local machine, execute:
 
+    $ git clone https://github.com/caruccio/bad
+    $ cd bad
     $ docker build . -t bad
 
 A new image *bad* is created:

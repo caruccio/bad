@@ -334,7 +334,13 @@ $ tree
     └── deploy.tf                 # Terraform infrastructure configs
 ```
 
-# This scripts was tested against following versions:
+# This tool was tested with:
+
+    $ uname -a
+    Linux 6feb04efd992 3.10.0-327.36.3.el7.x86_64 #1 SMP Mon Oct 24 16:09:20 UTC 2016 x86_64 Linux
+
+    $ uname -a
+    Linux 2b18b61dea20 4.4.41-moby #1 SMP Thu Jan 12 13:03:58 UTC 2017 x86_64 Linux
 
     $ terraform --version
     Terraform v0.9.11
@@ -342,17 +348,17 @@ $ tree
     $ packer --version
     1.0.3
 
+    $ ansible --version
+    ansible 2.3.0.0
+
     $ docker --version
-    Docker version 1.13.0-rc6, build 2f2d055
+    Docker version 17.05.0-ce, build v17.05.0-ce
 
     $ python --version
-    Python 2.7.10
-
-    $ virtualenv --version
-    15.1.0
+    Python 2.7.13
 
     $ pip --version
-    pip 9.0.1 from /Users/mateus/rea/deployer/.env/lib/python2.7/site-packages (python 2.7)
+    pip 9.0.1 from /usr/lib/python2.7/site-packages (python 2.7)
 
     $ s2i version
-    s2i v1.1.1
+    s2i v1.1.7

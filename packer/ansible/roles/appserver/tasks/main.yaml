@@ -1,0 +1,47 @@
+---
+- name: Copy docker storage configs
+  copy:
+    src: templates/docker-storage-setup
+    dest: /etc/sysconfig/docker-storage-setup
+    mode: 0644
+    backup: true
+    owner: root
+    group: root
+    force: true
+
+
+# Uncoment below to use `aws-instance` packer builder.
+#
+#- name: Copy AMI-Tool system wide profile
+#  copy:
+#    src: templates/ami-tools.sh
+#    dest: /etc/profile.d/ami-tools.sh
+#    mode: 0655
+#    owner: root
+#    group: root
+#
+#- name: Install AMI-Tool
+#  yum:
+#    state: present
+#    name:
+#    - ruby
+#    - https://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.noarch.rpm
+
+
+- name: Update system packages
+  yum:
+    state: latest
+    name: '*'
+    update_cache: true
+
+
+- name: Install dependencies
+  yum:
+    state: present
+    name:
+    - docker
+    - python-pip
+
+- name: Install docker-py
+  pip:
+    name: docker-py

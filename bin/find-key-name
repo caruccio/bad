@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+KEY=$1
+FINGERPRINT_MD5=$(openssl pkey -in ${KEY} -pubout -outform DER | openssl md5 -c | awk '{print $2}')
+FINGERPRINT_SHA1=$(openssl pkcs8 -in ${KEY} -nocrypt -topk8 -outform DER | openssl sha1 -c | awk '{print $2}')
+
+# list all keys and find the one matching fingerprint
+python <(cat <<EOF
+import sys, boto3
+ec2 = boto3.client('ec2')
+keys = ec2.describe_key_pairs(
+    Filters=[
+        {'Name': 'fingerprint', 'Values': sys.argv[1:]}
+    ])
+assert keys['KeyPairs']
+print keys['KeyPairs'][0]['KeyName']
+EOF
+) ${FINGERPRINT_MD5} ${FINGERPRINT_SHA1}

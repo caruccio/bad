@@ -1,0 +1,58 @@
+{
+  "variables": {
+    "git_ref":        "dev",
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "aws_region":     "{{env `AWS_DEFAULT_REGION`}}"
+  },
+
+  "builders": [
+    {
+      "type":           "amazon-ebs",
+      "ami_name":       "BAD - AppServer",
+      "access_key":     "{{user `aws_access_key`}}",
+      "secret_key":     "{{user `aws_secret_key`}}",
+      "region":         "{{user `aws_region`}}",
+      "instance_type":  "t2.micro",
+      "source_ami":     "ami-46c1b650",
+      "ssh_username":   "centos",
+
+      "ami_block_device_mappings": [
+        {
+          "device_name":           "/dev/xvda",
+          "volume_size":           "8",
+          "delete_on_termination": true
+        }
+      ],
+
+      "tags": {
+        "BuildTimestamp": "{{timestamp}}"
+      }
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo yum install -y epel-release",
+        "sudo yum install -y ansible"
+      ]
+    },
+    {
+      "type":          "ansible-local",
+      "playbook_file": "ansible/playbook.yaml",
+      "role_paths":    [ "ansible/roles/appserver" ]
+    }
+  ],
+
+  "post-processors": [
+    [
+      {
+        "type":       "manifest",
+        "output":     "manifest.json",
+        "strip_path": true
+      }
+    ]
+  ]
+}

@@ -1,0 +1,63 @@
+#!/bin/sh
+
+BAD=/bad/build-and-deploy.sh
+
+if [ $# -eq 0 -o "$1" == 'help' -o "$1" == '--help' -o "$1" == "-h" ]; then
+    cat <<EOF
+Usage: docker run [ENV-PARAMS] [VOLUME-PARAMS] [BAD-IMAGE-NAME] [APP-IMAGE-NAME]
+
+Where:
+
+    - ENV-PARAMS
+        -e AWS_ACCESS_KEY_ID=XXXXXXXXX
+        -e AWS_SECRET_ACCESS_KEY=XXXXXXXXX
+        -e AWS_DEFAULT_REGION=XXXXXX
+
+    - VOLUME-PARAMS
+
+        -v <PATH-TO-SOURCE-ROOT-DIR>:/src
+        -v <PATH-TO-SSH-PRIVATE-KEY>:/ssh-private-key
+        -v <PATH-TO-DOCKER-SOCKET>:/var/run/docker.sock
+        -v <PATH-TO-DOCKER-CONFIG-DIR>:/bad/.docker
+
+    - BAD-IMAGE-NAME
+
+        Usually "bad"
+
+    - OUTPUT-IMAGE-NAME
+
+        docker-account/app-image-name:tag
+
+Example usage:
+
+    $ docker run \\
+        -e AWS_ACCESS_KEY_ID=XXXXXXXXXXXXXXX \\
+        -e AWS_SECRET_ACCESS_KEY=XXXXXXXXXXXXXXXXXX \\
+        -e AWS_DEFAULT_REGION=us-east-1 \\
+        -v /path/to/simple-sinatra-app/:/src \\
+        -v \$HOME/.ssh/id_rsa:/ssh-private-key \\
+        -v /var/run/docker.sock:/var/run/docker.sock \\
+        -v \$HOME/.docker/:/bad/.docker \\
+        -it --rm \\
+        bad \\
+        caruccio/ssa:1.0
+EOF
+    exit
+fi
+
+if [ -x "$1" ]; then
+    exec ${@}
+fi
+
+if [ "$1" == 'build-ami' ]; then
+    exec /bad/packer/build.sh $2
+fi
+
+IMAGE_NAME=${1:-myaccount/myapp:latest}
+
+if [ ! -f /ssh-private-key ]; then
+    echo Missing private key
+    exit 1
+fi
+
+exec $BAD /src $IMAGE_NAME /ssh-private-key

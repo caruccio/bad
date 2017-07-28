@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -eu
+
+DOCKER_IMAGE_NAME="${1:-${DOCKER_IMAGE_NAME}}"
+
+if ! echo "${DOCKER_IMAGE_NAME}" | grep : -q; then
+    DOCKER_IMAGE_NAME="${IMAGE}:latest"
+fi
+
+docker push "${DOCKER_IMAGE_NAME}"

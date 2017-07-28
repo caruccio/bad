@@ -1,0 +1,54 @@
+---
+- name: Stop docker daemon
+  systemd:
+    name: docker
+    state: stopped
+
+
+- name: Setup docker storage
+  command: docker-storage-setup
+
+
+- name: Enable docker daemon
+  systemd:
+    name: docker
+    enabled: yes
+    daemon_reload: yes
+
+
+- name: Start docker daemon
+  systemd:
+    name: docker
+    state: started
+    daemon_reload: yes
+
+
+- name: Pull app image
+  docker_image:
+    name: '{{ docker_image_name }}'
+
+
+- name: Start app container
+  docker_container:
+    # container configs
+    image: '{{ docker_image_name }}'
+    name: ssa
+    ports:
+      - "80:8080"
+    user: 1001
+
+    # daemon state
+    state: started
+    restart: true
+    restart_policy: unless-stopped
+    recreate: true
+    detach: true
+    pull: true
+    log_driver: journald
+
+    # limit cpu at 95% so the system can still run if our app goes crazy
+    # (100000 * number-of-cpus) * 0.95
+    cpu_quota: 190000
+    # this may vary
+    memory: 1.5G
+

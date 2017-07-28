@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+
+import sys, boto3
+
+ec2 = boto3.client('ec2')
+amis = ec2.describe_images(
+    Owners=['self'],
+    Filters=[
+        {'Name': 'name', 'Values': sys.argv[1:]}
+    ])
+assert amis['Images']
+print amis['Images'][0]['ImageId']

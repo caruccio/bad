@@ -1,0 +1,31 @@
+#!/bin/bash
+
+APP_ROOT_DIR="$1"
+DOCKER_IMAGE_NAME="$2"
+
+if [ -z "$APP_ROOT_DIR" ]; then
+    echo "Usage: $0 <APP_ROOT_DIR> <DOCKER_IMAGE_NAME>"
+    exit 1
+fi
+
+# detect souce code language
+
+if [ -e "${APP_ROOT_DIR}/Gemfile" ]; then
+    BUILDER_IMAGE=centos/ruby-22-centos7
+elif [ -e "${APP_ROOT_DIR}/requirements.txt" ]; then
+    BUILDER_IMAGE=centos/python-36-centos7
+fi ## add more builder images here
+
+set -eu
+
+s2i --loglevel=1 build "${APP_ROOT_DIR}" "${BUILDER_IMAGE}" "${DOCKER_IMAGE_NAME}"
+
+docker images "${DOCKER_IMAGE_NAME}"
+
+echo
+echo -e "\e[33;1m"
+echo "To start the app, execute:"
+echo
+echo "  $ docker run -it --rm -p 8080:8080 \"${DOCKER_IMAGE_NAME}\""
+echo -e "\e[m"
+echo
